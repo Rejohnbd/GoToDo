@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -52,7 +51,7 @@ func ConnectDB(cfg Config) (*gorm.DB, error) {
 		return nil, fmt.Errorf("failed to connect to database: %w", err)
 	}
 
-	log.Println("Database connected successfully!")
+	fmt.Println("Database connected successfully!")
 
 	return db, nil
 }

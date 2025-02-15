@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"log"
+	"fmt"
 	"todo/config"
 	"todo/internal/app"
 )
@@ -13,7 +13,7 @@ func StartServer() {
 	// Connect to the database
 	db, err := config.ConnectDB(cfg)
 	if err != nil {
-		log.Fatalf("Database connection failed: %s", err)
+		fmt.Println("Database connection failed: ", err)
 		return
 	}
 
@@ -21,6 +21,6 @@ func StartServer() {
 	app := app.NewFiberApp(cfg, db)
 
 	// Start the server
-	log.Printf("Server is starting on port %s...\n", cfg.Port)
-	log.Fatal(app.Listen(":" + cfg.Port))
+	fmt.Println("Server is starting on port ", cfg.Port)
+	fmt.Println(app.Listen(":" + cfg.Port))
 }
