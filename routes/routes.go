@@ -15,4 +15,6 @@ func SetupRoutes(app *fiber.App) {
 
 	api := app.Group("/api")
 	api.Get("/todos", handlerTodo.GetTodos)
+	api.Post("/todos", handlerTodo.CreateTodo)
+	api.Delete("/todos/:id", handlerTodo.DeleteTodo)
 }

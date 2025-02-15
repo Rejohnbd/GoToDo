@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"fmt"
+	"todo/internal/models"
 	"todo/internal/repositories"
 
 	"github.com/gofiber/fiber/v2"
@@ -30,4 +32,20 @@ func (h *TodoHandler) GetTodos(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(response)
+}
+
+func (h *TodoHandler) CreateTodo(c *fiber.Ctx) error {
+	var todo models.Todo
+	if err := c.BodyParser(&todo); err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Invalid input"})
+	}
+	h.Repo.CreateTodo(&todo)
+	return c.Status(201).JSON(todo)
+}
+
+func (h *TodoHandler) DeleteTodo(c *fiber.Ctx) error {
+	id, _ := c.ParamsInt("id")
+	fmt.Println(id)
+	h.Repo.DeleteTodo(uint(id))
+	return c.SendStatus(204)
 }
