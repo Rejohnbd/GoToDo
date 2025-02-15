@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -18,19 +19,17 @@ type Config struct {
 	DbName     string
 }
 
-func LoadConfig() Config {
+var AppConfig Config
+var DB *gorm.DB
+
+func LoadConfig() {
 	err := godotenv.Load()
 	if err != nil {
-		panic("Error loading .env file: " + err.Error())
+		log.Println("⚠️ Could not load .env file, using defaults")
 	}
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "3000" // Default port
-	}
-
-	return Config{
-		Port:       port,
+	AppConfig = Config{
+		Port:       os.Getenv("PORT"),
 		DbHost:     os.Getenv("DB_HOST"),
 		DbPort:     os.Getenv("DB_PORT"),
 		DbUser:     os.Getenv("DB_USER"),
@@ -39,19 +38,19 @@ func LoadConfig() Config {
 	}
 }
 
-func ConnectDB(cfg Config) (*gorm.DB, error) {
-	// log.Println(cfg.DbUser, cfg.DbPassword, cfg.DbHost, cfg.DbPort, cfg.DbName)
+func ConnectDB() error {
 	dsn := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
-		cfg.DbHost, cfg.DbUser, cfg.DbPassword, cfg.DbName, cfg.DbPort,
+		AppConfig.DbHost, AppConfig.DbUser, AppConfig.DbPassword, AppConfig.DbName, AppConfig.DbPort,
 	)
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	var err error
+	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		return nil, fmt.Errorf("failed to connect to database: %w", err)
+		return fmt.Errorf("failed to connect to database: %w", err)
 	}
 
-	fmt.Println("Database connected successfully!")
+	log.Println("Database connected successfully!")
 
-	return db, nil
+	return nil
 }

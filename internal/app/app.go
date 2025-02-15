@@ -1,19 +1,16 @@
 package app
 
 import (
-	"todo/config"
+	"todo/routes"
 
 	"github.com/gofiber/fiber/v2"
-	"gorm.io/gorm"
 )
 
-func NewFiberApp(cfg config.Config, db *gorm.DB) *fiber.App {
+func NewFiberApp() *fiber.App {
 	app := fiber.New()
 
-	// Routes
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Welcome to the Todo App")
-	})
+	// Initialize routes
+	routes.SetupRoutes(app)
 
 	return app
 }
