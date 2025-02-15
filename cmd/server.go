@@ -5,6 +5,7 @@ import (
 	"log"
 	"todo/config"
 	"todo/internal/app"
+	"todo/migrations"
 )
 
 func StartServer() {
@@ -16,6 +17,9 @@ func StartServer() {
 		log.Fatalf("Database connection failed: %s", err)
 		return
 	}
+
+	// Run database migrations
+	migrations.RunMigrations()
 
 	// Initialize the application
 	app := app.NewFiberApp()
